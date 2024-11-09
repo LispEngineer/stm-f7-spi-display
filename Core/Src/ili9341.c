@@ -2,6 +2,8 @@
 #include "stm32f7xx_hal.h"
 #include "ili9341.h"
 
+static uint16_t pixel_buffer[320*240];
+
 static void ILI9341_Select() {
     HAL_GPIO_WritePin(ILI9341_CS_GPIO_Port, ILI9341_CS_Pin, GPIO_PIN_RESET);
 }
@@ -274,13 +276,17 @@ void ILI9341_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint1
     ILI9341_Select();
     ILI9341_SetAddressWindow(x, y, x+w-1, y+h-1);
 
-    uint8_t data[] = { color >> 8, color & 0xFF };
-    HAL_GPIO_WritePin(ILI9341_DC_GPIO_Port, ILI9341_DC_Pin, GPIO_PIN_SET);
-    for(y = h; y > 0; y--) {
-        for(x = w; x > 0; x--) {
-            HAL_SPI_Transmit(&ILI9341_SPI_PORT, data, sizeof(data), HAL_MAX_DELAY);
-        }
+    size_t pos = 0;
+    size_t end_pos = w * h;
+    // We need to flip the bytes of the color we are setting
+    uint16_t inv_color = ((color & 0xFF) << 8) | (color >> 8);
+
+    // Set everything we're sending, then send it all at once, for much faster
+    // output than calling HAL every 2 bytes
+    for (pos = 0; pos < end_pos; pos++) {
+        pixel_buffer[pos] = inv_color;
     }
+    ILI9341_WriteData((uint8_t *)pixel_buffer, end_pos * 2);
 
     ILI9341_Unselect();
 }

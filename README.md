@@ -50,3 +50,9 @@ Chip configuration
 * I don't readily see how this can be easily done with DMA
   given the need to toggle the CS and CD GPIOs occasionally
   and in sync with the SPI data  
+  
+  
+* TODO
+
+* Figure out how to use 8-bit color so we can double the speed
+  of the I/O we do with bitmaps
