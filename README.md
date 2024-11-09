@@ -56,3 +56,10 @@ Chip configuration
 
 * Figure out how to use 8-bit color so we can double the speed
   of the I/O we do with bitmaps
+  * DOesn't seem to be a way to do this
+* Use a smaller pixel buffer than 320x240x2 bytes (150k)
+  * Maybe use an Nk buffer and loop through it when needed
+  * But at least big enough for a decent font size like 16x26
+    which is 832 bytes
+  * I was thinking more like 16k or 8k pixels
+    * This would require 19 writes to blank the whole screen
