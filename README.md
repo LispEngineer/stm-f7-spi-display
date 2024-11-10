@@ -63,3 +63,6 @@ Chip configuration
     which is 832 bytes
   * I was thinking more like 16k or 8k pixels
     * This would require 19 writes to blank the whole screen
+* Rewrite this all with queues and DMA
+  * Have reusable buffers
+  * Have callbacks when requests are completed
